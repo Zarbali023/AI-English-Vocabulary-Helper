@@ -360,6 +360,29 @@
       padding: 10px 12px;
     }
 
+    .sentence-rules {
+      margin-top: 28px;
+      border-top: 2px dashed #ffd166;
+      padding-top: 22px;
+    }
+
+    .sentence-rules h2 {
+      margin-top: 0;
+      color: #7048a8;
+    }
+
+    .rule-card {
+      margin-top: 10px;
+      border: 2px solid #c9f9e8;
+      border-radius: 12px;
+      background: #f3fffb;
+      padding: 13px 15px;
+    }
+
+    .rule-card strong {
+      color: #26745c;
+    }
+
     audio {
       display: block;
       width: min(100%, 440px);
@@ -430,6 +453,42 @@
         <div class="grammar-controls">
           <button id="previous-lesson" type="button">← Previous</button>
           <button id="next-lesson" type="button">Next step →</button>
+        </div>
+      </section>
+
+      <section class="sentence-rules" aria-labelledby="sentence-rules-title">
+        <h2 id="sentence-rules-title">How to Make English Sentences</h2>
+        <p>Use these simple rules to build clear sentences.</p>
+        <div class="rule-card">
+          <strong>1. Subject + verb</strong>
+          <p>Who or what comes first, followed by the action: <em>Students learn.</em></p>
+        </div>
+        <div class="rule-card">
+          <strong>2. Subject + verb + object</strong>
+          <p>Add what receives the action: <em>I read a book.</em></p>
+        </div>
+        <div class="rule-card">
+          <strong>3. Add details</strong>
+          <p>Add time, place, or manner: <em>She studies English at home every evening.</em></p>
+        </div>
+        <div class="rule-card">
+          <strong>4. Make a negative sentence</strong>
+          <p>Use <em>do not</em> or <em>does not</em>: <em>He does not understand the word.</em></p>
+        </div>
+        <div class="rule-card">
+          <strong>5. Ask a question</strong>
+          <p>Begin with a question word or helping verb: <em>What does this word mean?</em></p>
+        </div>
+        <div class="rule-card">
+          <strong>6. Start with a capital and end with punctuation</strong>
+          <p>Use a capital letter and a period, question mark, or exclamation mark.</p>
+        </div>
+        <div class="quiz">
+          <h2>Sentence builder practice</h2>
+          <p>Put these words in the correct order:</p>
+          <p><strong>English / studies / Maya / every day</strong></p>
+          <button id="sentence-answer" type="button">Show answer</button>
+          <p id="sentence-answer-text" class="quiz-feedback" hidden>Answer: Maya studies English every day.</p>
         </div>
       </section>
 
@@ -1009,6 +1068,11 @@ Nina: Excellent. I will use it in a sentence.`,
 
     document.querySelector("#read-reading").addEventListener("click", () => {
       readAloud(document.querySelector("#reading-text").textContent);
+    });
+
+    document.querySelector("#sentence-answer").addEventListener("click", (event) => {
+      document.querySelector("#sentence-answer-text").hidden = false;
+      event.currentTarget.disabled = true;
     });
 
     renderLesson();
