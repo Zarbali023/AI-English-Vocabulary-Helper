@@ -96,6 +96,32 @@
       gap: 8px;
     }
 
+    .step {
+      margin: 18px 0 7px;
+      color: #7048a8;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .word-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .word-suggestions button {
+      border: 2px solid #c9f9e8;
+      background: #f3fffb;
+      color: #26745c;
+      font-size: 0.9rem;
+      padding: 7px 10px;
+    }
+
+    .word-suggestions button:hover {
+      background: #c9f9e8;
+    }
+
     input, button {
       font: inherit;
       border-radius: 8px;
@@ -129,6 +155,22 @@
     .term {
       margin-bottom: 4px;
       color: #7048a8;
+    }
+
+    .simple-label {
+      margin-bottom: 4px;
+      color: #26745c;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .meaning {
+      margin-top: 6px;
+      border-radius: 12px;
+      background: #fff1bd;
+      padding: 14px 16px;
+      font-size: 1.12rem;
+      line-height: 1.55;
     }
 
     .tag {
@@ -173,6 +215,95 @@
       font-size: 0.95rem;
     }
 
+    .study-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .study-tools button {
+      background: #ff6b9d;
+    }
+
+    .study-tools button:hover {
+      background: #d94f7e;
+    }
+
+    .quiz {
+      margin-top: 24px;
+      border: 2px solid #c9f9e8;
+      border-radius: 14px;
+      background: #f3fffb;
+      padding: 18px;
+    }
+
+    .quiz h2 {
+      margin-top: 0;
+      color: #26745c;
+    }
+
+    .quiz-option {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      border: 2px solid #b9a2d8;
+      background: white;
+      color: #28224a;
+      text-align: left;
+    }
+
+    .quiz-option:hover {
+      background: #f3eaff;
+      color: #28224a;
+    }
+
+    .quiz-feedback {
+      margin-bottom: 0;
+      font-weight: 700;
+    }
+
+    .grammar {
+      margin-top: 28px;
+      border-top: 2px dashed #ffd166;
+      padding-top: 22px;
+    }
+
+    .grammar h2 {
+      margin-top: 0;
+      color: #7048a8;
+    }
+
+    .lesson {
+      display: none;
+      border: 2px solid #b9a2d8;
+      border-radius: 14px;
+      background: #fff;
+      padding: 16px;
+    }
+
+    .lesson.active {
+      display: block;
+    }
+
+    .lesson-number {
+      color: #26745c;
+      font-weight: 800;
+    }
+
+    .grammar-example {
+      border-left: 4px solid #ff6b9d;
+      background: #fff1bd;
+      padding: 10px 12px;
+    }
+
+    .grammar-controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
     audio {
       display: block;
       width: min(100%, 440px);
@@ -194,16 +325,38 @@
       <h1>AI English Vocabulary Helper</h1>
       <p class="intro">Enter an AI term to see a plain-English explanation, an example, and a practice question.</p>
 
+      <p class="step">Step 1: Choose a word</p>
       <label for="word">Vocabulary word</label>
       <div class="search-row">
         <input id="word" type="search" placeholder="Try: prompt" autocomplete="off">
         <button id="search" type="button">Explain word</button>
+      </div>
+      <div class="word-suggestions" aria-label="Popular words">
+        <button type="button" data-word="prompt">prompt</button>
+        <button type="button" data-word="model">model</button>
+        <button type="button" data-word="context">context</button>
+        <button type="button" data-word="hallucination">hallucination</button>
+        <button type="button" data-word="bias">bias</button>
+      </div>
+      <div class="study-tools">
+        <button id="random-word" type="button">🎲 Random word</button>
+        <button id="start-quiz" type="button">🧠 Quick quiz</button>
       </div>
 
       <div id="result" aria-live="polite">
         <p>Choose a word from the list below or search for one.</p>
         <p><strong>Available words:</strong> artificial intelligence, prompt, model, context, token, hallucination, bias, verification, agent, fine-tuning</p>
       </div>
+
+      <section class="grammar" aria-labelledby="grammar-title">
+        <h2 id="grammar-title">English Grammar Path</h2>
+        <p>Learn one small step at a time. Read the example and answer the quick check.</p>
+        <div id="lesson"></div>
+        <div class="grammar-controls">
+          <button id="previous-lesson" type="button">← Previous</button>
+          <button id="next-lesson" type="button">Next step →</button>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -213,66 +366,115 @@
         partOfSpeech: "noun",
         meaning: "Computer systems designed to perform tasks that usually require human intelligence.",
         example: "We used artificial intelligence to generate a first draft.",
+        easySentence: "AI can help me write.",
         practice: "What kind of tasks can AI help with?"
       },
       "prompt": {
         partOfSpeech: "noun",
         meaning: "The instruction or question given to an AI system.",
         example: "I improved my prompt by explaining the audience and the required format.",
+        easySentence: "My prompt asks for a short answer.",
         practice: "What information can make a prompt clearer?"
       },
       "model": {
         partOfSpeech: "noun",
         meaning: "The trained AI system that produces an answer from an input.",
         example: "The model summarized the article after I provided the text.",
+        easySentence: "The model answered my question.",
         practice: "What does a model do with a prompt?"
       },
       "context": {
         partOfSpeech: "noun",
         meaning: "Information surrounding a request that helps AI understand what it means.",
         example: "I included the assignment instructions as context for the AI.",
+        easySentence: "The picture gives context.",
         practice: "Why might an AI answer improve when it has more relevant context?"
       },
       "token": {
         partOfSpeech: "noun",
         meaning: "A small piece of text that an AI model processes.",
         example: "A long document may contain many more tokens than a short question.",
+        easySentence: "This short sentence has tokens.",
         practice: "Why does the length of a document matter to an AI model?"
       },
       "hallucination": {
         partOfSpeech: "noun",
         meaning: "An AI-generated statement that sounds confident but is false, unsupported, or invented.",
         example: "The citation was a hallucination because the source did not exist.",
+        easySentence: "The fake fact was a hallucination.",
         practice: "How can you check for an AI hallucination?"
       },
       "bias": {
         partOfSpeech: "noun",
         meaning: "An unfair or one-sided influence that can affect an AI system's output.",
         example: "We looked for bias in the examples before using them for learners.",
+        easySentence: "We checked the answer for bias.",
         practice: "Why should people check AI answers for bias?"
       },
       "verification": {
         partOfSpeech: "noun",
         meaning: "The process of checking whether information is accurate and supported.",
         example: "I performed verification by comparing the definition with a reliable dictionary.",
+        easySentence: "Verification checks the facts.",
         practice: "What source could you use for verification?"
       },
       "agent": {
         partOfSpeech: "noun",
         meaning: "An AI system that can plan and carry out several steps toward a goal.",
         example: "The agent searched the project files and prepared a draft report.",
+        easySentence: "The agent completed the task.",
         practice: "Why should you review an agent's actions?"
       },
       "fine-tuning": {
         partOfSpeech: "noun",
         meaning: "Additional training that adapts an AI model for a particular task.",
         example: "Fine-tuning can help a model follow a specialized writing style.",
+        easySentence: "Fine-tuning improves the model.",
         practice: "When might a specialized model be useful?"
       }
     };
 
     const wordInput = document.querySelector("#word");
     const result = document.querySelector("#result");
+    const terms = Object.keys(vocabulary);
+    const grammarLessons = [
+      {
+        title: "Build a simple sentence",
+        rule: "A basic English sentence often follows Subject + Verb + Object.",
+        example: "The student reads a book.",
+        check: "Which sentence has the clearest word order?",
+        answer: "The learner studies English."
+      },
+      {
+        title: "Use nouns and pronouns",
+        rule: "A noun names a person, place, or thing. A pronoun can replace a noun.",
+        example: "Maria is ready. She is ready.",
+        check: "Which pronoun can replace “the teacher”?",
+        answer: "He or she"
+      },
+      {
+        title: "Choose the verb",
+        rule: "A verb shows an action or a state.",
+        example: "They practise every day.",
+        check: "What is the verb in “The app helps learners”?",
+        answer: "helps"
+      },
+      {
+        title: "Make a question",
+        rule: "Use a question word or an auxiliary verb to ask for information.",
+        example: "What does this word mean?",
+        check: "Which sentence is a question?",
+        answer: "How do you spell it?"
+      },
+      {
+        title: "Talk about the past",
+        rule: "Use a past-tense verb for an action that already happened.",
+        example: "I studied English yesterday.",
+        check: "What is the past tense of “study”?",
+        answer: "studied"
+      }
+    ];
+    let lessonIndex = 0;
 
     function showWord() {
       const requested = wordInput.value.trim().toLowerCase();
@@ -291,11 +493,17 @@
           <button type="button" id="read-result">📖 Read aloud</button>
           <button type="button" id="record-word">🎙️ Record pronunciation</button>
         </div>
+        <div class="study-tools">
+          <button type="button" id="practice-word">✏️ Practice this word</button>
+        </div>
         <p id="recording-status" class="recording-status">You can record yourself saying the word and replay it.</p>
-        <h3>Meaning</h3>
-        <p>${entry.meaning}</p>
+        <p class="simple-label">Step 2: Understand the word</p>
+        <h3>Simple meaning</h3>
+        <p class="meaning">${entry.meaning}</p>
         <h3>Example</h3>
         <p>${entry.example}</p>
+        <h3>Easy sentence</h3>
+        <p>${entry.easySentence}</p>
         <div class="practice">
           <strong>Practice question:</strong>
           <p>${entry.practice}</p>
@@ -317,6 +525,9 @@
       result.querySelector("#listen-word").addEventListener("click", () => speak(requested));
       result.querySelector("#read-result").addEventListener("click", () => {
         speak(`${requested}. ${entry.meaning} Example: ${entry.example}`);
+      });
+      result.querySelector("#practice-word").addEventListener("click", () => {
+        startWordPractice(requested);
       });
 
       let recorder;
@@ -361,10 +572,160 @@
       });
     }
 
+    function startWordPractice(word) {
+      const entry = vocabulary[word];
+      const original = result.innerHTML;
+      const distractors = terms
+        .filter((term) => term !== word)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 2);
+      const choices = [word, ...distractors].sort(() => Math.random() - 0.5);
+      result.innerHTML = `
+        <section class="quiz">
+          <h2>Practice: ${word}</h2>
+          <p>Which word matches this meaning?</p>
+          <p><strong>${entry.meaning}</strong></p>
+          <div class="quiz-options"></div>
+          <p class="quiz-feedback" aria-live="polite"></p>
+        </section>
+      `;
+      const quiz = result.querySelector(".quiz");
+      const options = quiz.querySelector(".quiz-options");
+      const feedback = quiz.querySelector(".quiz-feedback");
+      choices.forEach((choice) => {
+        const button = document.createElement("button");
+        button.className = "quiz-option";
+        button.type = "button";
+        button.textContent = choice;
+        button.addEventListener("click", () => {
+          options.querySelectorAll("button").forEach((option) => {
+            option.disabled = true;
+          });
+          feedback.textContent = choice === word
+            ? `Correct! You remembered “${word}.”`
+            : `Keep practising. The correct answer is “${word}.”`;
+          const back = document.createElement("button");
+          back.type = "button";
+          back.textContent = "Back to word";
+          back.addEventListener("click", () => {
+            wordInput.value = word;
+            showWord();
+          });
+          quiz.append(back);
+        });
+        options.append(button);
+      });
+    }
+
     document.querySelector("#search").addEventListener("click", showWord);
+    document.querySelectorAll("[data-word]").forEach((button) => {
+      button.addEventListener("click", () => {
+        wordInput.value = button.dataset.word;
+        showWord();
+      });
+    });
     wordInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") showWord();
     });
+
+    document.querySelector("#random-word").addEventListener("click", () => {
+      wordInput.value = terms[Math.floor(Math.random() * terms.length)];
+      showWord();
+    });
+
+    document.querySelector("#start-quiz").addEventListener("click", () => {
+      let score = 0;
+      let questionNumber = 0;
+      const quiz = document.createElement("section");
+      quiz.className = "quiz";
+      result.replaceChildren(quiz);
+
+      const askQuestion = () => {
+        questionNumber += 1;
+        const answer = terms[Math.floor(Math.random() * terms.length)];
+        const choices = [answer];
+        while (choices.length < 3) {
+          const choice = terms[Math.floor(Math.random() * terms.length)];
+          if (!choices.includes(choice)) choices.push(choice);
+        }
+        choices.sort(() => Math.random() - 0.5);
+        quiz.innerHTML = `
+          <h2>Quick quiz</h2>
+          <p><strong>Question ${questionNumber} of 3:</strong> Which word matches this meaning?</p>
+          <p>“${vocabulary[answer].meaning}”</p>
+          <div class="quiz-options"></div>
+          <p class="quiz-feedback" aria-live="polite"></p>
+        `;
+        const options = quiz.querySelector(".quiz-options");
+        const feedback = quiz.querySelector(".quiz-feedback");
+        choices.forEach((choice) => {
+          const button = document.createElement("button");
+          button.className = "quiz-option";
+          button.type = "button";
+          button.textContent = choice;
+          button.addEventListener("click", () => {
+            options.querySelectorAll("button").forEach((option) => {
+              option.disabled = true;
+            });
+            if (choice === answer) {
+              score += 1;
+              feedback.textContent = "Correct!";
+            } else {
+              feedback.textContent = `Not quite. The answer is “${answer}.”`;
+            }
+            if (questionNumber < 3) {
+              const next = document.createElement("button");
+              next.type = "button";
+              next.textContent = "Next question";
+              next.addEventListener("click", askQuestion);
+              quiz.append(next);
+            } else {
+              feedback.textContent += ` Final score: ${score}/3.`;
+            }
+          });
+          options.append(button);
+        });
+      };
+
+      askQuestion();
+    });
+
+    function renderLesson() {
+      const lesson = grammarLessons[lessonIndex];
+      document.querySelector("#lesson").innerHTML = `
+        <article class="lesson active">
+          <p class="lesson-number">Step ${lessonIndex + 1} of ${grammarLessons.length}</p>
+          <h3>${lesson.title}</h3>
+          <p>${lesson.rule}</p>
+          <p class="grammar-example"><strong>Example:</strong> ${lesson.example}</p>
+          <p><strong>Quick check:</strong> ${lesson.check}</p>
+          <button class="show-answer" type="button">Show answer</button>
+          <p class="quiz-feedback" id="lesson-answer" hidden><strong>Answer:</strong> ${lesson.answer}</p>
+        </article>
+      `;
+      document.querySelector(".show-answer").addEventListener("click", (event) => {
+        document.querySelector("#lesson-answer").hidden = false;
+        event.currentTarget.disabled = true;
+      });
+      document.querySelector("#previous-lesson").disabled = lessonIndex === 0;
+      document.querySelector("#next-lesson").disabled = lessonIndex === grammarLessons.length - 1;
+    }
+
+    document.querySelector("#previous-lesson").addEventListener("click", () => {
+      if (lessonIndex > 0) {
+        lessonIndex -= 1;
+        renderLesson();
+      }
+    });
+
+    document.querySelector("#next-lesson").addEventListener("click", () => {
+      if (lessonIndex < grammarLessons.length - 1) {
+        lessonIndex += 1;
+        renderLesson();
+      }
+    });
+
+    renderLesson();
   </script>
 </body>
 </html>
