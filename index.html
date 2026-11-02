@@ -12,6 +12,11 @@
       background: #fff4e8;
     }
 
+    function updateProgress() {
+      document.querySelector("#progress-count").textContent = `${learnedWords.size}/${terms.length} learned`;
+      document.querySelector("#progress-bar").value = learnedWords.size;
+    }
+
     body {
       margin: 0;
     }
@@ -230,6 +235,28 @@
       background: #d94f7e;
     }
 
+    .progress-box {
+      margin-top: 16px;
+      border-radius: 12px;
+      background: #f3eaff;
+      padding: 12px 14px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #7048a8;
+      font-weight: 800;
+    }
+
+    progress {
+      width: 100%;
+      height: 12px;
+      margin-top: 8px;
+      accent-color: #7048a8;
+    }
+
     .quiz {
       margin-top: 24px;
       border: 2px solid #c9f9e8;
@@ -304,6 +331,35 @@
       margin-top: 12px;
     }
 
+    .reading {
+      margin-top: 28px;
+      border-top: 2px dashed #ffd166;
+      padding-top: 22px;
+    }
+
+    .reading h2 {
+      margin-top: 0;
+      color: #7048a8;
+    }
+
+    .reading-card {
+      border: 2px solid #ffd166;
+      border-radius: 14px;
+      background: #fffdfb;
+      padding: 16px;
+    }
+
+    .reading-text {
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .reading-words {
+      border-left: 4px solid #26745c;
+      background: #f3fffb;
+      padding: 10px 12px;
+    }
+
     audio {
       display: block;
       width: min(100%, 440px);
@@ -342,6 +398,13 @@
         <button id="random-word" type="button">🎲 Random word</button>
         <button id="start-quiz" type="button">🧠 Quick quiz</button>
       </div>
+      <div class="progress-box">
+        <div class="progress-label">
+          <span>Your learning progress</span>
+          <span id="progress-count">0/10 learned</span>
+        </div>
+        <progress id="progress-bar" value="0" max="10"></progress>
+      </div>
 
       <div id="result" aria-live="polite">
         <p>Choose a word from the list below or search for one.</p>
@@ -355,6 +418,25 @@
         <div class="grammar-controls">
           <button id="previous-lesson" type="button">← Previous</button>
           <button id="next-lesson" type="button">Next step →</button>
+        </div>
+      </section>
+
+      <section class="reading" aria-labelledby="reading-title">
+        <h2 id="reading-title">Reading Practice</h2>
+        <p>Read with your eyes first. Then listen and read aloud to practise pronunciation.</p>
+        <div class="reading-card">
+          <h3 id="reading-heading">Small dialogue: A new word</h3>
+          <p id="reading-text" class="reading-text">Maya: What does “prompt” mean?
+Sam: A prompt is a question or instruction for AI.
+Maya: Can you give me an example?
+Sam: Sure. “Write a short story” is a prompt.
+Maya: Now I understand!</p>
+          <p class="reading-words"><strong>Words to notice:</strong> meaning, question, instruction, example, understand</p>
+          <div class="study-tools">
+            <button id="read-dialogue" type="button">🔊 Listen to dialogue</button>
+            <button id="read-story" type="button">📚 Show small story</button>
+            <button id="read-reading" type="button">📖 Read aloud</button>
+          </div>
         </div>
       </section>
     </section>
@@ -437,6 +519,7 @@
     const wordInput = document.querySelector("#word");
     const result = document.querySelector("#result");
     const terms = Object.keys(vocabulary);
+    const learnedWords = new Set(JSON.parse(localStorage.getItem("geap103-learned-words") || "[]"));
     const grammarLessons = [
       {
         title: "Build a simple sentence",
@@ -475,6 +558,21 @@
       }
     ];
     let lessonIndex = 0;
+    const dialogue = `Maya: What does “prompt” mean?
+Sam: A prompt is a question or instruction for AI.
+Maya: Can you give me an example?
+Sam: Sure. “Write a short story” is a prompt.
+Maya: Now I understand!`;
+    const story = `Lina is a student who wants to learn about artificial intelligence.
+She writes a clear prompt, and the model gives her an answer.
+Lina reads the context and counts each token in the short sentence.
+“What should I do next?” she asks.
+Her teacher says, “Check the answer for bias and hallucination.”
+Lina uses verification and compares the answer with a reliable dictionary.
+Then an agent helps her organize the words.
+Yesterday, Lina studied fine-tuning and wrote an easy sentence.
+Today, she remembers every new word and explains it to her friend.
+Lina is learning English step by step.`;
 
     function showWord() {
       const requested = wordInput.value.trim().toLowerCase();
@@ -495,6 +593,7 @@
         </div>
         <div class="study-tools">
           <button type="button" id="practice-word">✏️ Practice this word</button>
+          <button type="button" id="mark-learned">✅ Mark as learned</button>
         </div>
         <p id="recording-status" class="recording-status">You can record yourself saying the word and replay it.</p>
         <p class="simple-label">Step 2: Understand the word</p>
@@ -528,6 +627,13 @@
       });
       result.querySelector("#practice-word").addEventListener("click", () => {
         startWordPractice(requested);
+      });
+      result.querySelector("#mark-learned").addEventListener("click", (event) => {
+        learnedWords.add(requested);
+        localStorage.setItem("geap103-learned-words", JSON.stringify([...learnedWords]));
+        event.currentTarget.textContent = "✅ Learned!";
+        event.currentTarget.disabled = true;
+        updateProgress();
       });
 
       let recorder;
@@ -725,7 +831,34 @@
       }
     });
 
+    function readAloud(text) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.82;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    document.querySelector("#read-dialogue").addEventListener("click", () => {
+      document.querySelector("#reading-heading").textContent = "Small dialogue: A new word";
+      document.querySelector("#reading-text").textContent = dialogue;
+      readAloud(dialogue);
+    });
+
+    document.querySelector("#read-story").addEventListener("click", () => {
+      document.querySelector("#reading-heading").textContent = "Small story: Lina learns a word";
+      document.querySelector("#reading-text").textContent = story;
+      document.querySelector(".reading-words").innerHTML = "<strong>Words to notice:</strong> artificial intelligence, prompt, model, context, token, bias, hallucination, verification, reliable, agent, fine-tuning";
+      readAloud(story);
+    });
+
+    document.querySelector("#read-reading").addEventListener("click", () => {
+      readAloud(document.querySelector("#reading-text").textContent);
+    });
+
     renderLesson();
+    updateProgress();
   </script>
 </body>
 </html>
