@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI English Vocabulary Helper</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: #28224a;
+      background: #fff4e8;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    main {
+      width: min(760px, calc(100% - 32px));
+      margin: 48px auto;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: #fffdfb;
+      border: 3px solid #ffd166;
+      border-radius: 24px;
+      box-shadow: 0 12px 30px rgba(121, 78, 161, 0.15);
+      padding: 32px;
+    }
+
+    .card::before {
+      position: absolute;
+      top: -72px;
+      right: -56px;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: #c9f9e8;
+      content: "";
+      opacity: 0.85;
+    }
+
+    h1 {
+      position: relative;
+      margin-top: 0;
+      color: #7048a8;
+      font-size: clamp(2rem, 5vw, 3rem);
+    }
+
+    .intro {
+      position: relative;
+      color: #655b78;
+      font-size: 1.08rem;
+    }
+
+    .sticker {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      z-index: 1;
+      display: grid;
+      width: 88px;
+      height: 88px;
+      transform: rotate(8deg);
+      place-items: center;
+      border: 4px solid white;
+      border-radius: 50%;
+      background: #ff6b9d;
+      box-shadow: 0 5px 12px rgba(112, 72, 168, 0.25);
+      color: white;
+      font-size: 2.7rem;
+    }
+
+    .sticker-text {
+      position: absolute;
+      top: 92px;
+      right: 22px;
+      z-index: 1;
+      transform: rotate(5deg);
+      color: #7048a8;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin: 24px 0 8px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input, button {
+      font: inherit;
+      border-radius: 8px;
+      padding: 11px 13px;
+    }
+
+    input {
+      flex: 1;
+      border: 2px solid #b9a2d8;
+      background: #fff;
+    }
+
+    button {
+      border: 0;
+      color: white;
+      background: #7048a8;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button:hover {
+      background: #523281;
+    }
+
+    #result {
+      margin-top: 28px;
+      border-top: 2px dashed #ffd166;
+      padding-top: 22px;
+    }
+
+    .term {
+      margin-bottom: 4px;
+      color: #7048a8;
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: #c9f9e8;
+      color: #26745c;
+      font-size: 0.9rem;
+      padding: 4px 9px;
+    }
+
+    .message {
+      color: #8a3d25;
+      font-weight: 600;
+    }
+
+    .practice {
+      background: #fff1bd;
+      border-left: 4px solid #ff6b9d;
+      margin-top: 20px;
+      padding: 14px 16px;
+    }
+
+    .audio-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .audio-tools button {
+      background: #26745c;
+    }
+
+    .audio-tools button:hover {
+      background: #1d5b48;
+    }
+
+    .recording-status {
+      margin: 10px 0 0;
+      color: #655b78;
+      font-size: 0.95rem;
+    }
+
+    audio {
+      display: block;
+      width: min(100%, 440px);
+      margin-top: 12px;
+    }
+
+    @media (max-width: 520px) {
+      .search-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card">
+      <div class="sticker" aria-label="AI study buddy">🤖</div>
+      <div class="sticker-text">Let's learn!</div>
+      <h1>AI English Vocabulary Helper</h1>
+      <p class="intro">Enter an AI term to see a plain-English explanation, an example, and a practice question.</p>
+
+      <label for="word">Vocabulary word</label>
+      <div class="search-row">
+        <input id="word" type="search" placeholder="Try: prompt" autocomplete="off">
+        <button id="search" type="button">Explain word</button>
+      </div>
+
+      <div id="result" aria-live="polite">
+        <p>Choose a word from the list below or search for one.</p>
+        <p><strong>Available words:</strong> artificial intelligence, prompt, model, context, token, hallucination, bias, verification, agent, fine-tuning</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const vocabulary = {
+      "artificial intelligence": {
+        partOfSpeech: "noun",
+        meaning: "Computer systems designed to perform tasks that usually require human intelligence.",
+        example: "We used artificial intelligence to generate a first draft.",
+        practice: "What kind of tasks can AI help with?"
+      },
+      "prompt": {
+        partOfSpeech: "noun",
+        meaning: "The instruction or question given to an AI system.",
+        example: "I improved my prompt by explaining the audience and the required format.",
+        practice: "What information can make a prompt clearer?"
+      },
+      "model": {
+        partOfSpeech: "noun",
+        meaning: "The trained AI system that produces an answer from an input.",
+        example: "The model summarized the article after I provided the text.",
+        practice: "What does a model do with a prompt?"
+      },
+      "context": {
+        partOfSpeech: "noun",
+        meaning: "Information surrounding a request that helps AI understand what it means.",
+        example: "I included the assignment instructions as context for the AI.",
+        practice: "Why might an AI answer improve when it has more relevant context?"
+      },
+      "token": {
+        partOfSpeech: "noun",
+        meaning: "A small piece of text that an AI model processes.",
+        example: "A long document may contain many more tokens than a short question.",
+        practice: "Why does the length of a document matter to an AI model?"
+      },
+      "hallucination": {
+        partOfSpeech: "noun",
+        meaning: "An AI-generated statement that sounds confident but is false, unsupported, or invented.",
+        example: "The citation was a hallucination because the source did not exist.",
+        practice: "How can you check for an AI hallucination?"
+      },
+      "bias": {
+        partOfSpeech: "noun",
+        meaning: "An unfair or one-sided influence that can affect an AI system's output.",
+        example: "We looked for bias in the examples before using them for learners.",
+        practice: "Why should people check AI answers for bias?"
+      },
+      "verification": {
+        partOfSpeech: "noun",
+        meaning: "The process of checking whether information is accurate and supported.",
+        example: "I performed verification by comparing the definition with a reliable dictionary.",
+        practice: "What source could you use for verification?"
+      },
+      "agent": {
+        partOfSpeech: "noun",
+        meaning: "An AI system that can plan and carry out several steps toward a goal.",
+        example: "The agent searched the project files and prepared a draft report.",
+        practice: "Why should you review an agent's actions?"
+      },
+      "fine-tuning": {
+        partOfSpeech: "noun",
+        meaning: "Additional training that adapts an AI model for a particular task.",
+        example: "Fine-tuning can help a model follow a specialized writing style.",
+        practice: "When might a specialized model be useful?"
+      }
+    };
+
+    const wordInput = document.querySelector("#word");
+    const result = document.querySelector("#result");
+
+    function showWord() {
+      const requested = wordInput.value.trim().toLowerCase();
+      const entry = vocabulary[requested];
+
+      if (!entry) {
+        result.innerHTML = "<p class=\"message\">I do not have that word yet. Try one of the available words.</p>";
+        return;
+      }
+
+      result.innerHTML = `
+        <h2 class="term">${requested}</h2>
+        <span class="tag">${entry.partOfSpeech}</span>
+        <div class="audio-tools">
+          <button type="button" id="listen-word">🔊 Listen to word</button>
+          <button type="button" id="read-result">📖 Read aloud</button>
+          <button type="button" id="record-word">🎙️ Record pronunciation</button>
+        </div>
+        <p id="recording-status" class="recording-status">You can record yourself saying the word and replay it.</p>
+        <h3>Meaning</h3>
+        <p>${entry.meaning}</p>
+        <h3>Example</h3>
+        <p>${entry.example}</p>
+        <div class="practice">
+          <strong>Practice question:</strong>
+          <p>${entry.practice}</p>
+        </div>
+      `;
+
+      const speak = (text) => {
+        if (!("speechSynthesis" in window)) {
+          result.querySelector("#recording-status").textContent = "Text-to-speech is not supported in this browser.";
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US";
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+      };
+
+      result.querySelector("#listen-word").addEventListener("click", () => speak(requested));
+      result.querySelector("#read-result").addEventListener("click", () => {
+        speak(`${requested}. ${entry.meaning} Example: ${entry.example}`);
+      });
+
+      let recorder;
+      let chunks = [];
+      result.querySelector("#record-word").addEventListener("click", async (event) => {
+        const button = event.currentTarget;
+        const status = result.querySelector("#recording-status");
+
+        if (recorder && recorder.state === "recording") {
+          recorder.stop();
+          button.textContent = "🎙️ Record pronunciation";
+          status.textContent = "Recording stopped. Your recording is ready below.";
+          return;
+        }
+
+        if (!navigator.mediaDevices || !window.MediaRecorder) {
+          status.textContent = "Audio recording is not supported in this browser.";
+          return;
+        }
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          chunks = [];
+          recorder = new MediaRecorder(stream);
+          recorder.addEventListener("dataavailable", (recordingEvent) => {
+            if (recordingEvent.data.size > 0) chunks.push(recordingEvent.data);
+          });
+          recorder.addEventListener("stop", () => {
+            stream.getTracks().forEach((track) => track.stop());
+            const audio = document.createElement("audio");
+            audio.controls = true;
+            audio.src = URL.createObjectURL(new Blob(chunks, { type: recorder.mimeType }));
+            audio.setAttribute("aria-label", "Your pronunciation recording");
+            status.insertAdjacentElement("afterend", audio);
+          }, { once: true });
+          recorder.start();
+          button.textContent = "⏹️ Stop recording";
+          status.textContent = `Recording “${requested}”… say the word clearly, then stop.`;
+        } catch (error) {
+          status.textContent = "Microphone access was not allowed. Check your browser permission and try again.";
+        }
+      });
+    }
+
+    document.querySelector("#search").addEventListener("click", showWord);
+    wordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") showWord();
+    });
+  </script>
+</body>
+</html>

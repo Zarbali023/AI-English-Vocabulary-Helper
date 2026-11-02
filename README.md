@@ -18,6 +18,11 @@ The first version will accept one English word and provide:
 
 The tool is intended to support learning, not replace a dictionary or teacher.
 
+## Try the browser app
+
+Open `index.html` in a web browser. Enter one of the AI vocabulary terms to
+see its explanation, example, and practice question.
+
 ## How it will be checked
 
 - Test common words, difficult words, and a misspelled word.
