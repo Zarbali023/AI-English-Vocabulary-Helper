@@ -435,6 +435,7 @@ Maya: Now I understand!</p>
           <div class="study-tools">
             <button id="read-dialogue" type="button">🔊 Listen to dialogue</button>
             <button id="read-story" type="button">📚 Show small story</button>
+            <button id="next-reading" type="button">🔄 Next reading</button>
             <button id="read-reading" type="button">📖 Read aloud</button>
           </div>
         </div>
@@ -555,6 +556,69 @@ Maya: Now I understand!</p>
         example: "I studied English yesterday.",
         check: "What is the past tense of “study”?",
         answer: "studied"
+      },
+      {
+        title: "Use a, an, and the",
+        rule: "Use “a” or “an” for one general thing and “the” for a specific thing.",
+        example: "I read a book. The book is useful.",
+        check: "Which article completes “She has ___ idea”?",
+        answer: "an"
+      },
+      {
+        title: "Make plurals",
+        rule: "Use a plural form when you mean more than one person or thing.",
+        example: "One word; two words.",
+        check: "What is the plural of “sentence”?",
+        answer: "sentences"
+      },
+      {
+        title: "Use the present simple",
+        rule: "Use the present simple for habits, facts, and repeated actions.",
+        example: "She practises English every day.",
+        check: "Which tense describes a daily habit?",
+        answer: "present simple"
+      },
+      {
+        title: "Use the present continuous",
+        rule: "Use am, is, or are plus an -ing verb for an action happening now.",
+        example: "They are learning new words.",
+        check: "Complete: “I ___ reading now.”",
+        answer: "am"
+      },
+      {
+        title: "Talk about the future",
+        rule: "Use “will” or “going to” for a future plan or prediction.",
+        example: "I will review these words tomorrow.",
+        check: "Which word can show a future plan?",
+        answer: "will"
+      },
+      {
+        title: "Use prepositions",
+        rule: "Prepositions show relationships such as place, time, or direction.",
+        example: "The book is on the desk.",
+        check: "Which word shows place in the example?",
+        answer: "on"
+      },
+      {
+        title: "Describe with adjectives",
+        rule: "An adjective describes a noun.",
+        example: "The clear explanation helped me.",
+        check: "Which word describes “explanation”?",
+        answer: "clear"
+      },
+      {
+        title: "Use modal verbs",
+        rule: "Words such as can, should, and must show ability, advice, or necessity.",
+        example: "You should check the answer.",
+        check: "Which modal gives advice in the example?",
+        answer: "should"
+      },
+      {
+        title: "Connect ideas",
+        rule: "Words such as and, but, because, and so connect ideas.",
+        example: "I checked the answer because accuracy matters.",
+        check: "Which word gives the reason in the example?",
+        answer: "because"
       }
     ];
     let lessonIndex = 0;
@@ -573,6 +637,33 @@ Then an agent helps her organize the words.
 Yesterday, Lina studied fine-tuning and wrote an easy sentence.
 Today, she remembers every new word and explains it to her friend.
 Lina is learning English step by step.`;
+    const readingLibrary = [
+      {
+        heading: "Dialogue: Checking an answer",
+        text: `Omar: Can we verify this answer?
+Nora: Yes. Let us check a reliable dictionary.
+Omar: The context gives the word a different meaning.
+Nora: Good observation. We should read the whole sentence.`,
+        words: "verify, reliable, context, meaning, observation"
+      },
+      {
+        heading: "Story: The careful learner",
+        text: `Ben wrote a prompt for his project.
+The model gave a useful answer, but Ben did not accept it immediately.
+He checked the facts and found one small error.
+Ben corrected the answer and learned why verification is important.`,
+        words: "prompt, model, useful, facts, error, corrected, verification"
+      },
+      {
+        heading: "Dialogue: Practising pronunciation",
+        text: `Sara: How do I say “hallucination”?
+Leo: Listen first, then say it slowly.
+Sara: Hal-lu-ci-na-tion.
+Leo: Great! Record yourself and try again tomorrow.`,
+        words: "pronunciation, slowly, listen, record, tomorrow"
+      }
+    ];
+    let readingIndex = -1;
 
     function showWord() {
       const requested = wordInput.value.trim().toLowerCase();
@@ -851,6 +942,15 @@ Lina is learning English step by step.`;
       document.querySelector("#reading-text").textContent = story;
       document.querySelector(".reading-words").innerHTML = "<strong>Words to notice:</strong> artificial intelligence, prompt, model, context, token, bias, hallucination, verification, reliable, agent, fine-tuning";
       readAloud(story);
+    });
+
+    document.querySelector("#next-reading").addEventListener("click", () => {
+      readingIndex = (readingIndex + 1) % readingLibrary.length;
+      const reading = readingLibrary[readingIndex];
+      document.querySelector("#reading-heading").textContent = reading.heading;
+      document.querySelector("#reading-text").textContent = reading.text;
+      document.querySelector(".reading-words").innerHTML = `<strong>Words to notice:</strong> ${reading.words}`;
+      readAloud(reading.text);
     });
 
     document.querySelector("#read-reading").addEventListener("click", () => {
